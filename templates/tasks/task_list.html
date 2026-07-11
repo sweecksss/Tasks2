@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Tasks — TaskBoard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1 class="page-title">Tasks <small>{{ tasks|length }} total</small></h1>
+  {% if user.is_authenticated %}
+    <a href="{% url 'task-create' %}" class="btn btn-primary">+ New Task</a>
+  {% endif %}
+</div>
+
+{% if tasks %}
+  <div class="task-grid">
+    {% for task in tasks %}
+      <a href="{% url 'task-detail' task.pk %}" class="task-card">
+        <div class="task-card-left">
+          <span class="task-card-title">{{ task.title }}</span>
+          <span class="task-card-desc">{{ task.description|truncatechars:80 }}</span>
+        </div>
+        <div class="task-card-right">
+          {% if task.due_date %}
+            <span class="detail-meta-item">📅 {{ task.due_date }}</span>
+          {% endif %}
+          {% if task.priority == 'low' %}
+            <span class="badge badge-low">Low</span>
+          {% elif task.priority == 'medium' %}
+            <span class="badge badge-medium">Medium</span>
+          {% else %}
+            <span class="badge badge-high">High</span>
+          {% endif %}
+          {% if task.status == 'todo' %}
+            <span class="badge badge-todo">To Do</span>
+          {% elif task.status == 'in_progress' %}
+            <span class="badge badge-progress">In Progress</span>
+          {% else %}
+            <span class="badge badge-done">Done</span>
+          {% endif %}
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="empty-state">
+    <h3>No tasks yet</h3>
+    <p>Create your first task to get started!</p>
+    {% if user.is_authenticated %}
+      <a href="{% url 'task-create' %}" class="btn btn-primary">+ Create Task</a>
+    {% endif %}
+  </div>
+{% endif %}
+{% endblock %}

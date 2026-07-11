@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block title %}{{ task.title }} — TaskBoard{% endblock %}
+
+{% block content %}
+<div class="detail-card">
+  <h1 class="detail-title">{{ task.title }}</h1>
+
+  <div class="detail-meta">
+    {% if task.status == 'todo' %}
+      <span class="badge badge-todo">To Do</span>
+    {% elif task.status == 'in_progress' %}
+      <span class="badge badge-progress">In Progress</span>
+    {% else %}
+      <span class="badge badge-done">Done</span>
+    {% endif %}
+
+    {% if task.priority == 'low' %}
+      <span class="badge badge-low">Low priority</span>
+    {% elif task.priority == 'medium' %}
+      <span class="badge badge-medium">Medium priority</span>
+    {% else %}
+      <span class="badge badge-high">High priority</span>
+    {% endif %}
+
+    {% if task.due_date %}
+      <span class="detail-meta-item">📅 Due: {{ task.due_date }}</span>
+    {% endif %}
+
+    <span class="detail-meta-item">👤 {{ task.creator.username }}</span>
+  </div>
+
+  <p style="color:var(--text-muted); font-size:.95rem;">{{ task.description }}</p>
+
+  {% if user == task.creator %}
+    <div class="detail-actions">
+      <a href="{% url 'task-update' task.pk %}" class="btn btn-secondary">✏️ Edit</a>
+      <a href="{% url 'task-delete' task.pk %}" class="btn btn-danger">🗑 Delete</a>
+    </div>
+  {% endif %}
+</div>
+
+<div class="comments-section">
+  <p class="comments-title">💬 Comments</p>
+
+  <div class="comment-list">
+    {% for comment in task.comments.all %}
+      <div class="comment-item">
+        <p class="comment-content">{{ comment.content }}</p>
+        <div class="comment-meta">
+          <span>👤 {{ comment.creator.username }}</span>
+          <span>{{ comment.created_at|date:"d M Y, H:i" }}</span>
+        </div>
+        {% if comment.media %}
+          {% with url=comment.media.url|lower %}
+            {% if url|slice:"-4:" == ".mp4" or url|slice:"-5:" == ".webm" %}
+              <video controls style="max-width:100%; border-radius:8px; margin-top:.5rem;">
+                <source src="{{ comment.media.url }}">
+                Your browser does not support the video tag.
+              </video>
+            {% elif url|slice:"-4:" == ".jpg" or url|slice:"-4:" == ".png" or url|slice:"-4:" == ".gif" or url|slice:"-5:" == ".jpeg" or url|slice:"-5:" == ".webp" %}
+              <img src="{{ comment.media.url }}" alt="attachment" style="max-width:100%; border-radius:8px; margin-top:.5rem; display:block;">
+            {% else %}
+              <a href="{{ comment.media.url }}" class="comment-edit-link" target="_blank">📎 Attachment</a>
+            {% endif %}
+          {% endwith %}
+        {% endif %}
+        <a href="{% url 'edit-comment' comment.pk %}">Edit comment</a>
+      </div>
+    {% empty %}
+      <p style="color:var(--text-muted); font-size:.875rem;">No comments yet.</p>
+    {% endfor %}
+  </div>
+
+  {% if user.is_authenticated %}
+    <form method="post" enctype="multipart/form-data" class="comment-form">
+      {% csrf_token %}
+      <div style="flex:1; display:flex; flex-direction:column; gap:.5rem;">
+        {{ comment_form.content }}
+        <label class="file-upload-label">
+          📎 Attach image/video
+          {{ comment_form.media }}
+        </label>
+      </div>
+      <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+  {% endif %}
+</div>
+{% endblock %}
