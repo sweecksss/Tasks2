@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Login — TaskBoard{% endblock %}
+
+{% block content %}
+<div class="form-card">
+  <h2>🔑 Login</h2>
+
+  <form method="post">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <div style="color:var(--danger); margin-bottom: 1rem;">
+        {{ form.non_field_errors|join:', ' }}
+      </div>
+    {% endif %}
+    
+    {% for field in form %}
+      <div class="form-group">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+          <small style="color:var(--danger)">{{ field.errors|join:', ' }}</small>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Login</button>
+      <a href="{% url 'signup' %}" class="btn btn-secondary">Sign Up</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

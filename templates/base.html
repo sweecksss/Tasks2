@@ -20,9 +20,21 @@
     </div>
     <div class="navbar-user">
       {% if user.is_authenticated %}
-        Hello, <strong>{{ user.username }}</strong>
+        <a href="{% url 'profile-edit' %}" class="profile-link">
+          {% if user.profile.avatar %}
+            <img src="{{ user.profile.avatar.url }}" alt="avatar" class="nav-avatar" />
+          {% else %}
+            <span class="nav-avatar-placeholder">{{ user.username|slice:":1"|upper }}</span>
+          {% endif %}
+          Hello, <strong>{{ user.username }}</strong>
+        </a>
+        <form action="{% url 'logout' %}" method="post" style="display:inline; margin-left: 10px;">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-secondary" style="padding:.35rem .9rem">Logout</button>
+        </form>
       {% else %}
-        <a href="/accounts/login/" class="btn btn-secondary" style="padding:.35rem .9rem">Login</a>
+        <a href="{% url 'login' %}" class="btn btn-secondary" style="padding:.35rem .9rem">Login</a>
+        <a href="{% url 'signup' %}" class="btn btn-primary" style="padding:.35rem .9rem; margin-left: 5px;">Sign Up</a>
       {% endif %}
     </div>
   </nav>

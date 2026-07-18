@@ -26,7 +26,14 @@
       <span class="detail-meta-item">📅 Due: {{ task.due_date }}</span>
     {% endif %}
 
-    <span class="detail-meta-item">👤 {{ task.creator.username }}</span>
+    <span class="detail-meta-item">
+      {% if task.creator.profile.avatar %}
+        <img src="{{ task.creator.profile.avatar.url }}" alt="avatar" class="meta-avatar" />
+      {% else %}
+        <span class="meta-avatar-placeholder">{{ task.creator.username|slice:":1"|upper }}</span>
+      {% endif %}
+      {{ task.creator.username }}
+    </span>
   </div>
 
   <p style="color:var(--text-muted); font-size:.95rem;">{{ task.description }}</p>
@@ -47,7 +54,14 @@
       <div class="comment-item">
         <p class="comment-content">{{ comment.content }}</p>
         <div class="comment-meta">
-          <span>👤 {{ comment.creator.username }}</span>
+          <span class="comment-author">
+            {% if comment.creator.profile.avatar %}
+              <img src="{{ comment.creator.profile.avatar.url }}" alt="avatar" class="comment-avatar" />
+            {% else %}
+              <span class="comment-avatar-placeholder">{{ comment.creator.username|slice:":1"|upper }}</span>
+            {% endif %}
+            {{ comment.creator.username }}
+          </span>
           <span>{{ comment.created_at|date:"d M Y, H:i" }}</span>
         </div>
         {% if comment.media %}

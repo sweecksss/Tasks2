@@ -80,6 +80,9 @@ body {
 .navbar-user {
   font-size: .85rem;
   color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: .75rem;
 }
 .navbar-user strong { color: var(--accent2); }
 
@@ -451,3 +454,72 @@ body {
 ::-webkit-scrollbar       { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+.profile-link {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  color: var(--text);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+.profile-link:hover {
+  color: var(--accent2);
+}
+.profile-link strong {
+  color: inherit;
+}
+
+.nav-avatar, .meta-avatar, .comment-avatar, .profile-preview-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border);
+}
+.nav-avatar-placeholder, .meta-avatar-placeholder, .comment-avatar-placeholder, .profile-preview-placeholder {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: .85rem;
+  text-transform: uppercase;
+  border: 1px solid var(--border);
+}
+
+.meta-avatar, .meta-avatar-placeholder {
+  width: 24px;
+  height: 24px;
+  font-size: .7rem;
+}
+.comment-avatar, .comment-avatar-placeholder {
+  width: 24px;
+  height: 24px;
+  font-size: .7rem;
+}
+
+.comment-author {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+}
+
+/* Profile Form styling */
+.profile-form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.profile-preview-avatar, .profile-preview-placeholder {
+  width: 96px;
+  height: 96px;
+  font-size: 2.5rem;
+  box-shadow: var(--shadow);
+}

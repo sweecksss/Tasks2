@@ -2,10 +2,11 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.forms import UserCreationForm
 
-from .models import Task, Comment
+from .models import Task, Comment, Profile
 from .mixins import UserIsOwnerMixin
-from .forms import CommentForm, TaskForm
+from .forms import CommentForm, TaskForm, ProfileForm
 
 # Create your views here.
 class TaskListView(ListView):
@@ -56,3 +57,20 @@ class CommentUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('task-detail', kwargs={'pk': self.object.task.pk})
+
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    model = Profile
+    form_class = ProfileForm
+    template_name = 'tasks/profile_form.html'
+    success_url = reverse_lazy('task-list')
+
+    def get_object(self, queryset=None):
+        profile, created = Profile.objects.get_or_create(user=self.request.user)
+        return profile
+
+
+
+class SignUpView(CreateView):
+    form_class = UserCreationForm
+    success_url = reverse_lazy('login')
+    template_name = 'registration/signup.html'
